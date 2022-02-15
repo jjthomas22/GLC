@@ -5,13 +5,12 @@ Created on Wed Jan  5 14:41:30 2022
 @author: JJTHOMAS
 """
 
-# Note: To add documentation "Notes" for each significant code block. To improve readability and code functionality understanding
 """ GLC Data Scraper
 
 This script scrapes web data from the WBEA website (in 15 minute intervals). 
-The provided stations are used to specify which table values will be collected. 
-After the required values are stored, an SQL query is called to merge the data 
-into the provided database and corresponding table(s).
+The provided station ID's are used to specify which table values will be collected. 
+After the required values are stored in a dataframe array, an SQL query is used 
+to insert and/or merge the data into the provided database and corresponding table(s).
 
 This script requires the following Python modules be installed:
     - `requests`
@@ -88,6 +87,7 @@ try:
 
     logging.info("Connected to database")
 
+    # Target URL address for API contact
     url = 'https://wbea.org/asi-php/ams_hist/helpers/hist_table.php?s=2&f=T&sy=2021&sm=7&sd=8&sh=0&ey=2021&em=7&ed=9&eh=23&tt=l1mn'
 
     toDateYY = datetime.today().strftime('%Y')
@@ -197,5 +197,3 @@ try:
     logging.info("inserted into the database")
 except Exception as ex:
     logging.error('Exception is : {}'.format(ex))
-
-
