@@ -195,6 +195,6 @@ try:
     cursor.execute(query)
     conn.commit()
 
-    logging.info(Inserted into the database")
+    logging.info("Inserted into the database")
 except Exception as ex:
     logging.error('Exception is : {}'.format(ex))
