@@ -155,7 +155,7 @@ try:
                 logging.info("Number of data points fetched for station {} are: {}".format(station,df_11.shape[0]))
                 #logging.info("Number of columns are {}".format(df_11.shape[1]))
         else:
-            logging.error(f'Error! Status code is: {r.status_code}')
+            logging.error('Error! Status code is: {r.status_code}')
     
     all_dfs=pd.concat(all_available_dfs, axis=0)
 
@@ -190,11 +190,11 @@ try:
             WHEN NOT MATCHED THEN \
             INSERT {columns_list_query} VALUES {sr_columns_list_query};"
     
-    logging.info("inserting {} records into database".format((all_dfs.shape[0])))
+    logging.info("Inserting {} records into database".format((all_dfs.shape[0])))
 
     cursor.execute(query)
     conn.commit()
 
-    logging.info("inserted into the database")
+    logging.info(Inserted into the database")
 except Exception as ex:
     logging.error('Exception is : {}'.format(ex))
