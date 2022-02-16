@@ -23,16 +23,17 @@ The script's general structure:
     Import statements
     Log handling statements and values
     Try:
-        Database configuration and url target setup
+        Database configuration
+        Establishing connection to database
         Time interval and station setup
         For (station within the list of stations):
             Establishing communication with api endpoint
             If (status code == "OK"):
-                Collect requested data points for each station
+                Collect and store requested data points for each station
             Else:
                 Generate "error" log with corresponding status code
-        Cleaning up and formatting data
-        Query SQL database and merge data
+        Clean up and format data
+        Query SQL database and merge/insert data
         Commit changes to database
     Except:
         Generate "error" log with exception info
