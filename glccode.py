@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Jan  5 14:41:30 2022
+Created on Sun Mar 20 14:48:52 2022
 
 @author: JJTHOMAS
 """
 
-""" GLC Data Scraper
+"""
+Created on Wed Jan  5 14:41:30 2022
+@author: JJTHOMAS
+"""
 
+""" GLC Data Scraper
 This script scrapes web data from the WBEA website (in 15 minute intervals). 
 The provided station ID's are used to specify which table values will be collected. 
 After the required values are stored in a dataframe array, an SQL query is used 
 to insert and/or merge the data into the provided database and corresponding table(s).
-
 This script requires the following Python modules be installed:
     - `requests`
     - `pandas`
     - `numpy`
     - `pyodbc`
-
 The script's general structure:
-
     Import statements
     Log handling statements and values
     Try:
@@ -90,6 +91,15 @@ try:
 
     # Target URL address for API contact
     url = 'https://wbea.org/asi-php/ams_hist/helpers/hist_table.php?s=2&f=T&sy=2021&sm=7&sd=8&sh=0&ey=2021&em=7&ed=9&eh=23&tt=l1mn'
+    sqlfromdate = ''
+    selectstmt = "SELECT cast(min(Date_Time) as date) as Final_Date \
+                  from (SELECT max(Date_Time) as date_time, station_id \
+                        FROM [WBEA_Live_Bronze_v2] group by station_id) as temp"
+    res = cursor.execute(selectstmt)
+    for r in res:
+        sqlfromdate = r[0]
+        #print("Data fetched is = " + r)
+        print('Data fetched is =',r[0])
 
     toDateYY = datetime.today().strftime('%Y')
     toDateMM = datetime.today().strftime('%m')
@@ -97,7 +107,7 @@ try:
 
     logging.info("Running upto year {}-{}-{}".format(toDateDD,toDateMM,toDateYY))
 
-    fromDate = datetime.today() - timedelta(days=1)
+    fromDate = sqlfromdate
     fromDateYY = fromDate.strftime('%Y')
     fromDateMM = fromDate.strftime('%m')
     fromDateDD = fromDate.strftime('%d')
@@ -166,9 +176,11 @@ try:
     columns_list.append(columns_list.pop(columns_list.index('station_id')))
 
     final_df=all_dfs[columns_list].copy()
+    final_df = final_df.sort_values(by='Date_Time', ascending=False)
+    final_df =final_df.iloc[16:]
     final_df=final_df.astype('str')
 
-    params = [tuple(x) for x in final_df.values]
+  #  params = [tuple(x) for x in final_df.values]
 
     columns_list = final_df.columns.tolist()
     columns_list_query = f'({(",".join(columns_list))})'
